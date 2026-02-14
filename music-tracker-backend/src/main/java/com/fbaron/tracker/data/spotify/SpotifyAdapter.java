@@ -14,7 +14,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
+import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -33,7 +35,12 @@ public class SpotifyAdapter implements MusicProviderRepository {
     @Value("${spotify.client-secret}")
     private String clientSecret;
 
+    private String cachedToken;
+    private Instant expiryTime;
+
     private synchronized String getAccessToken() {
+        if (cachedToken != null && Instant.now().isBefore(expiryTime)) return cachedToken;
+
         log.info("Fetching Spotify Access Token...");
         MultiValueMap<String, String> formData =  new LinkedMultiValueMap<>();
         formData.add("grant_type", "client_credentials");
@@ -52,7 +59,11 @@ public class SpotifyAdapter implements MusicProviderRepository {
         }
 
         log.info("Spotify Access Token Fetched");
-        return (String) response.get("access_token");
+        this.cachedToken = (String) response.get("access_token");
+        Object expiresInObj = response.get("expires_in");
+        int expiresInSeconds = expiresInObj instanceof Number n ? n.intValue() : 3600;
+        this.expiryTime = Instant.now().plusSeconds(Math.max(0, expiresInSeconds - 60));
+        return cachedToken;
     }
 
     @Override
