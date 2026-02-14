@@ -6,3 +6,10 @@ server:
 spring:
   application:
     name: music-tracker-backend
+
+
+spotify:
+  api-base-url: https://api.spotify.com
+  auth-url: https://accounts.spotify.com/api/token
+  client-id: ${SPOTIFY_CLIENT_ID}
+  client-secret: ${SPOTIFY_CLIENT_SECRET}
