@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestClient;
 import java.util.Map;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class SpotifyAdapter implements MusicProviderRepository {
 
@@ -30,6 +32,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
     private synchronized String getAccessToken() {
         log.info("Fetching Spotify Access Token...");
         MultiValueMap<String, String> formData =  new LinkedMultiValueMap<>();
+        formData.add("grant_type", "client_credentials");
 
         var response = spotifyRestClient.post()
                 .uri(authUrl)
@@ -50,6 +53,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
 
     @Override
     public Track fetchMetadata(String isrCode) {
+        String token = getAccessToken();
         return null;
     }
 
