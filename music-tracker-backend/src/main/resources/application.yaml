@@ -20,3 +20,7 @@ spotify:
   auth-url: https://accounts.spotify.com/api/token
   client-id: ${SPOTIFY_CLIENT_ID}
   client-secret: ${SPOTIFY_CLIENT_SECRET}
+
+app:
+  storage:
+    location: ${STORAGE_LOCATION:./local-storage/covers}

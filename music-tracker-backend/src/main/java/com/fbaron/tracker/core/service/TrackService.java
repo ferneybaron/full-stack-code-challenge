@@ -2,7 +2,9 @@ package com.fbaron.tracker.core.service;
 
 import com.fbaron.tracker.core.model.RegistrationResult;
 import com.fbaron.tracker.core.model.Track;
+import com.fbaron.tracker.core.repository.FileStorageRepository;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
+import com.fbaron.tracker.core.repository.TrackCommandRepository;
 import com.fbaron.tracker.core.repository.TrackQueryRepository;
 import com.fbaron.tracker.core.usecase.RegisterTrackUseCase;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ public class TrackService implements RegisterTrackUseCase {
 
     private final TrackQueryRepository trackQueryRepository;
     private final MusicProviderRepository musicProviderRepository;
+    private final FileStorageRepository fileStorageRepository;
+    private final TrackCommandRepository trackCommandRepository;
 
     @Override
     public RegistrationResult register(String isrCode) {
@@ -38,11 +42,15 @@ public class TrackService implements RegisterTrackUseCase {
 
         // 3. Store the image
         byte[] imageBytes = musicProviderRepository.fetchCoverImage(track.getAlbumId());
+        String imagePath = fileStorageRepository.saveToDisk(isrCode, imageBytes);
 
         // 4. updated the object with the image localization
+        track.setCoverPath(imagePath);
 
         // Persist the track to DB and return the RegistrationResult
-        return null;
+        track = trackCommandRepository.save(track);
+        log.info("Track registered successfully: isrCode={}, name={}", isrCode, track.getName());
+        return new RegistrationResult(track, true);
     }
 
 }

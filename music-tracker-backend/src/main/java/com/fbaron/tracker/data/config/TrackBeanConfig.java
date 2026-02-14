@@ -1,6 +1,8 @@
 package com.fbaron.tracker.data.config;
 
+import com.fbaron.tracker.core.repository.FileStorageRepository;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
+import com.fbaron.tracker.core.repository.TrackCommandRepository;
 import com.fbaron.tracker.core.repository.TrackQueryRepository;
 import com.fbaron.tracker.core.service.TrackService;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,8 +23,14 @@ public class TrackBeanConfig {
 
     @Bean
     public TrackService trackService(TrackQueryRepository trackQueryRepository,
-                                     MusicProviderRepository musicProviderRepository) {
-        return new TrackService(trackQueryRepository, musicProviderRepository);
+                                     MusicProviderRepository musicProviderRepository,
+                                     FileStorageRepository fileStorageRepository,
+                                     TrackCommandRepository trackCommandRepository) {
+        return new TrackService(
+                trackQueryRepository,
+                musicProviderRepository,
+                fileStorageRepository,
+                trackCommandRepository);
     }
 
 }
