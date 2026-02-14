@@ -2,6 +2,8 @@ package com.fbaron.tracker.data.spotify;
 
 import com.fbaron.tracker.core.model.Track;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
+import com.fbaron.tracker.data.spotify.entity.SpotifySearchResponse;
+import com.fbaron.tracker.data.spotify.mapper.SpotifyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class SpotifyAdapter implements MusicProviderRepository {
 
     private final RestClient spotifyRestClient;
+    private final SpotifyMapper spotifyMapper;
 
     @Value("${spotify.auth-url}")
     private String authUrl;
@@ -54,7 +57,30 @@ public class SpotifyAdapter implements MusicProviderRepository {
     @Override
     public Track fetchMetadata(String isrCode) {
         String token = getAccessToken();
-        return null;
+
+        if (token == null || token.isBlank()) {
+            throw new RuntimeException("Spotify Access Token is missing");
+        }
+
+        SpotifySearchResponse response = spotifyRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v1/search")
+                        .queryParam("q", "isrc:" + isrCode)
+                        .queryParam("type", "track")
+                        .build())
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
+                .retrieve()
+                .body((SpotifySearchResponse.class));
+
+        if (response == null || response.tracks().items().isEmpty()) {
+            log.warn("Track not found in Spotify: isrCode = {}", isrCode);
+            throw new RuntimeException("Track not found with IRSC: " + isrCode);
+        }
+
+        var trackItem  = response.tracks().items().getFirst();
+        Track track = spotifyMapper.toModel(trackItem, isrCode);
+        log.debug("Fetched metadata form Spotify: isrCode={}, name={}", isrCode, track.getName());
+        return track;
     }
 
     @Override
