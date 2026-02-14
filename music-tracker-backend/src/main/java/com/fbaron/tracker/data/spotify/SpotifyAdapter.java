@@ -2,6 +2,7 @@ package com.fbaron.tracker.data.spotify;
 
 import com.fbaron.tracker.core.model.Track;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
+import com.fbaron.tracker.data.spotify.entity.SpotifyAlbumResponse;
 import com.fbaron.tracker.data.spotify.entity.SpotifySearchResponse;
 import com.fbaron.tracker.data.spotify.mapper.SpotifyMapper;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +86,26 @@ public class SpotifyAdapter implements MusicProviderRepository {
 
     @Override
     public byte[] fetchCoverImage(String albumId) {
-        return new byte[0];
+        String token = getAccessToken();
+
+        SpotifyAlbumResponse albumResponse = spotifyRestClient.get()
+                .uri("/v1/albums/{albumId}", albumId)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(token))
+                .retrieve()
+                .body(SpotifyAlbumResponse.class);
+
+        if (albumResponse == null || albumResponse.images().isEmpty()) {
+            log.warn("Album not found in Spotify: albumId = {}", albumId);
+            throw new RuntimeException("No images found for album: " + albumId);
+        }
+
+        String imageUrl = albumResponse.images().getFirst().url();
+        log.info("Fetching cover image for album={}", albumId);
+
+        return spotifyRestClient.get()
+                .uri(imageUrl)
+                .retrieve()
+                .body(byte[].class);
     }
 
 }
