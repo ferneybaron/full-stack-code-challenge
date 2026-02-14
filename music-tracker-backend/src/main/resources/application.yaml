@@ -7,6 +7,13 @@ spring:
   application:
     name: music-tracker-backend
 
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:${DATABASE_PORT:5432}/trackerdb?ssl=false
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    type: com.zaxxer.hikari.HikariDataSource
+
 
 spotify:
   api-base-url: https://api.spotify.com
