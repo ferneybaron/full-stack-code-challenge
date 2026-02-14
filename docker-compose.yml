@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  postgresdb:
+    image: postgres:17.5
+    environment:
+      POSTGRES_DB: trackerdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - challengedb-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  challengedb-data:
