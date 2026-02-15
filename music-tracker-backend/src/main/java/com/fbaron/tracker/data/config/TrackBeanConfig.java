@@ -10,9 +10,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
+/**
+ * Configuration for core service and Spotify REST client beans.
+ */
 @Configuration
 public class TrackBeanConfig {
 
+    /**
+     * Builds the RestClient used for Spotify API calls (base URL from config).
+     */
     @Bean
     public RestClient spotifyRestClient(RestClient.Builder builder,
                                         @Value("${spotify.api-base-url}") String apiBaseUrl) {
@@ -21,6 +27,9 @@ public class TrackBeanConfig {
                 .build();
     }
 
+    /**
+     * Builds the main track service with all required repository ports.
+     */
     @Bean
     public TrackService trackService(TrackQueryRepository trackQueryRepository,
                                      MusicProviderRepository musicProviderRepository,

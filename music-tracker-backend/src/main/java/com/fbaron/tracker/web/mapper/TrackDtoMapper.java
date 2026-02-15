@@ -5,6 +5,9 @@ import com.fbaron.tracker.web.dto.TrackDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * Maps domain {@link Track} to {@link com.fbaron.tracker.web.dto.TrackDto} (isExplicit field name).
+ */
 @Mapper(componentModel = "spring")
 public interface TrackDtoMapper {
 

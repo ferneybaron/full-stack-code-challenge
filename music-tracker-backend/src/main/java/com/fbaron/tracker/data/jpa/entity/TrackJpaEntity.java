@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * JPA entity for the tracks table (ISRC as primary key, metadata and cover path).
+ */
 @Entity
 @Getter
 @Setter

@@ -15,6 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * Adapter that stores and reads cover images on the local filesystem (path from config).
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class FileStorageAdapter implements FileStorageRepository {
     @Value("${app.storage.location}")
     private String storageLocation;
 
+    /** Ensures the storage root directory exists at startup. */
     @PostConstruct
     public void init() {
         try {
@@ -35,6 +39,7 @@ public class FileStorageAdapter implements FileStorageRepository {
         }
     }
 
+    /** Writes cover image bytes to a file named {@code isrCode.jpg} under the storage root. */
     @Override
     public String saveToDisk(String isrCode, byte[] content) {
         try {
@@ -50,6 +55,7 @@ public class FileStorageAdapter implements FileStorageRepository {
         }
     }
 
+    /** Reads file bytes from the given absolute path. */
     @Override
     public byte[] readFromDisk(String path) {
         try {

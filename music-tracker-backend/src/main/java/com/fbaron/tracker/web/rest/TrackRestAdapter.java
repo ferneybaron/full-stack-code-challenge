@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller for track operations: register, get metadata, get cover image.
+ * Delegates to use cases and maps domain to DTOs.
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class TrackRestAdapter implements TrackRestApi {
     private final GetCoverImageUseCase getCoverImageUseCase;
     private final TrackDtoMapper trackDtoMapper;
 
+    /** Registers a track by ISRC (201 if created, 200 if already exists). */
     @Override
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,6 +51,7 @@ public class TrackRestAdapter implements TrackRestApi {
         return ResponseEntity.ok(trackDto);
     }
 
+    /** Returns stored track metadata by ISRC. */
     @Override
     @GetMapping(path = "/{isrCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TrackDto> getTrackMetadata(@PathVariable String isrCode) {
@@ -55,6 +61,7 @@ public class TrackRestAdapter implements TrackRestApi {
         return ResponseEntity.ok(trackDto);
     }
 
+    /** Returns cover image bytes for the track (JPEG) by ISRC. */
     @Override
     @GetMapping("/{isrCode}/cover")
     public ResponseEntity<byte[]> getCover(@PathVariable String isrCode) {

@@ -19,8 +19,11 @@ import org.springframework.web.client.RestClient;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.Objects;
 
+/**
+ * Spotify API adapter. Do not log token, clientId, clientSecret, authUrl,
+ * or any response/request containing credentials or access_token.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -45,7 +48,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
         if (cachedToken != null && Instant.now().isBefore(expiryTime)) return cachedToken;
 
         log.info("Fetching Spotify Access Token...");
-        MultiValueMap<String, String> formData =  new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", "client_credentials");
 
         var response = spotifyRestClient.post()
@@ -92,7 +95,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
             throw new TrackNotFoundException("Track not found with IRSC: " + isrCode);
         }
 
-        var trackItem  = response.tracks().items().getFirst();
+        var trackItem = response.tracks().items().getFirst();
         Track track = spotifyMapper.toModel(trackItem, isrCode);
         log.debug("Fetched metadata form Spotify: isrCode={}, name={}", isrCode, track.getName());
         return track;

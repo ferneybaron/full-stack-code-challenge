@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Request body for registering a track (ISRC only; validated).
+ */
 public record RegisterTrackDto(
         @NotBlank(message = "ISRC code is required")
         @Size(min = 12, max = 20)

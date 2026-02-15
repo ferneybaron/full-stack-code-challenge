@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * OpenAPI configuration for the Music Tracker Backend API.
+ */
 @Configuration
 public class OpenApiConfig {
 
@@ -22,6 +25,11 @@ public class OpenApiConfig {
 
     // dev, prod URLs
 
+    /**
+     * Configures the OpenAPI specification for the API.
+     *
+     * @return OpenAPI configuration
+     */
     @Bean
     public OpenAPI openAPI() {
 

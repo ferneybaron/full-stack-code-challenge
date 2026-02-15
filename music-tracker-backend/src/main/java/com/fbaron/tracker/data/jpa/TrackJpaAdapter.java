@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * JPA adapter implementing track query and command ports via Spring Data JPA.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

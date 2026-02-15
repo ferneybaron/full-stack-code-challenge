@@ -6,6 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * Maps Spotify API track items to domain {@link Track} (and duration ms to seconds).
+ */
 @Mapper(componentModel = "spring")
 public interface SpotifyMapper {
 
