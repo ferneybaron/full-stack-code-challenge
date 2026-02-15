@@ -8,6 +8,7 @@ import com.fbaron.tracker.core.usecase.RegisterTrackUseCase;
 import com.fbaron.tracker.web.dto.RegisterTrackDto;
 import com.fbaron.tracker.web.dto.TrackDto;
 import com.fbaron.tracker.web.mapper.TrackDtoMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class TrackRestAdapter implements TrackRestApi {
     @Override
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TrackDto> registerTrack(@RequestBody RegisterTrackDto dto) {
+    public ResponseEntity<TrackDto> registerTrack(@Valid @RequestBody RegisterTrackDto dto) {
         RegistrationResult result = registerTrackUseCase.register(dto.isrCode());
         TrackDto trackDto = trackDtoMapper.toDto(result.track());
         if (result.saved()) {

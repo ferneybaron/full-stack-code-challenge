@@ -3,6 +3,7 @@ package com.fbaron.tracker.web.rest;
 import com.fbaron.tracker.web.dto.RegisterTrackDto;
 import com.fbaron.tracker.web.dto.TrackDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 
-// Document later
+/**
+ * REST API contract for track management: register by ISRC, get metadata, get cover image.
+ * OpenAPI annotations describe operations and responses.
+ */
 @Tag(name = "Track Management",
         description = "Endpoints for Music Provider track metadata integration and storage")
 public interface TrackRestApi {
@@ -29,8 +33,27 @@ public interface TrackRestApi {
     })
     ResponseEntity<TrackDto> registerTrack(RegisterTrackDto dto);
 
-    ResponseEntity<TrackDto> getTrackMetadata(String isrCode);
+    @Operation(summary = "Get track metadata", description = "Retrieves stored track information from the local database.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Metadata retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Track not found in local database",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    ResponseEntity<TrackDto> getTrackMetadata(
+            @Parameter(description = "The ISRC code of the track", example = "USMC18620549")
+            String isrCode);
 
-    ResponseEntity<byte[]> getCover(String isrCode);
+    @Operation(summary = "Get cover image", description = "Returns the binary image data for the track cover.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image retrieved successfully",
+                    content = @Content(mediaType = "image/jpeg")),
+            @ApiResponse(responseCode = "404", description = "Track not found in local database",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "500", description = "Error reading file from disk",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    ResponseEntity<byte[]> getCover(
+            @Parameter(description = "The ISRC code of the track", example = "USMC18620549")
+            String isrCode);
 
 }
