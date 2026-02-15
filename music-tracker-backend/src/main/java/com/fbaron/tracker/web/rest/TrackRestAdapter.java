@@ -11,6 +11,7 @@ import com.fbaron.tracker.web.mapper.TrackDtoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +32,10 @@ public class TrackRestAdapter implements TrackRestApi {
     private final TrackDtoMapper trackDtoMapper;
 
     @Override
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TrackDto> registerTrack(@RequestBody RegisterTrackDto dto) {
-        RegistrationResult result  =  registerTrackUseCase.register(dto.isrCode());
+        RegistrationResult result = registerTrackUseCase.register(dto.isrCode());
         TrackDto trackDto = trackDtoMapper.toDto(result.track());
         if (result.saved()) {
             log.info("Track created: isCode={}", trackDto.isrCode());
@@ -44,7 +46,7 @@ public class TrackRestAdapter implements TrackRestApi {
     }
 
     @Override
-    @GetMapping("/{isrCode}")
+    @GetMapping(path = "/{isrCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TrackDto> getTrackMetadata(@PathVariable String isrCode) {
         log.info("Get Track metadata: isrCode={}", isrCode);
         Track track = getTrackUseCase.getTrackByIsrCode(isrCode);
@@ -53,7 +55,7 @@ public class TrackRestAdapter implements TrackRestApi {
     }
 
     @Override
-    @GetMapping("/{isrCode}/cover")
+    @GetMapping(path = "/{isrCode}/cover", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getCover(@PathVariable String isrCode) {
         log.info("Get Track cover Image: isrCode={}", isrCode);
         byte[] imageBytes = getCoverImageUseCase.getCoverImage(isrCode);
