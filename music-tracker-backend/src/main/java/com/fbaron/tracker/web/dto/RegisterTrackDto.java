@@ -1,4 +1,6 @@
 package com.fbaron.tracker.web.dto;
 
-public record RegisterTrackDto(String isrCode) {
+public record RegisterTrackDto(
+
+        String isrCode) {
 }
