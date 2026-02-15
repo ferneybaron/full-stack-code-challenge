@@ -6,6 +6,7 @@ import com.fbaron.tracker.core.repository.FileStorageRepository;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
 import com.fbaron.tracker.core.repository.TrackCommandRepository;
 import com.fbaron.tracker.core.repository.TrackQueryRepository;
+import com.fbaron.tracker.core.usecase.GetTrackUseCase;
 import com.fbaron.tracker.core.usecase.RegisterTrackUseCase;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 
 @RequiredArgsConstructor
-public class TrackService implements RegisterTrackUseCase {
+public class TrackService implements RegisterTrackUseCase, GetTrackUseCase {
 
     private static final Logger log = LogManager.getLogger(TrackService.class);
 
@@ -53,4 +54,12 @@ public class TrackService implements RegisterTrackUseCase {
         return new RegistrationResult(track, true);
     }
 
+    @Override
+    public Track getTrackByIsrCode(String isrCode) {
+        return trackQueryRepository.findByIsrCode(isrCode)
+                .orElseThrow(() -> {
+                    log.error("Track not found: isrCode={}", isrCode);
+                    return new RuntimeException("Track not found with ISRC: " + isrCode);
+                });
+    }
 }

@@ -1,6 +1,8 @@
 package com.fbaron.tracker.web.rest;
 
 import com.fbaron.tracker.core.model.RegistrationResult;
+import com.fbaron.tracker.core.model.Track;
+import com.fbaron.tracker.core.usecase.GetTrackUseCase;
 import com.fbaron.tracker.core.usecase.RegisterTrackUseCase;
 import com.fbaron.tracker.web.dto.RegisterTrackDto;
 import com.fbaron.tracker.web.dto.TrackDto;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrackRestAdapter implements TrackRestApi {
 
     private final RegisterTrackUseCase registerTrackUseCase;
+    private final GetTrackUseCase getTrackUseCase;
     private final TrackDtoMapper trackDtoMapper;
 
     @Override
@@ -33,6 +38,15 @@ public class TrackRestAdapter implements TrackRestApi {
             return ResponseEntity.status(HttpStatus.CREATED).body(trackDto);
         }
         log.info("Track already existed, returning: isCode={}", trackDto.isrCode());
+        return ResponseEntity.ok(trackDto);
+    }
+
+    @Override
+    @GetMapping("/{isrCode}")
+    public ResponseEntity<TrackDto> getTrackMetadata(@PathVariable String isrCode) {
+        log.info("Get Track metadata: isrCode={}", isrCode);
+        Track track = getTrackUseCase.getTrackByIsrCode(isrCode);
+        TrackDto trackDto = trackDtoMapper.toDto(track);
         return ResponseEntity.ok(trackDto);
     }
 

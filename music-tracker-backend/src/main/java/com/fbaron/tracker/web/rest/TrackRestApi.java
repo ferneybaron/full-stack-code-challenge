@@ -9,4 +9,6 @@ public interface TrackRestApi {
 
     ResponseEntity<TrackDto> registerTrack(RegisterTrackDto dto);
 
+    ResponseEntity<TrackDto> getTrackMetadata(String isrCode);
+
 }
