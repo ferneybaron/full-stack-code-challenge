@@ -55,11 +55,13 @@ public class TrackRestAdapter implements TrackRestApi {
     }
 
     @Override
-    @GetMapping(path = "/{isrCode}/cover", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping("/{isrCode}/cover")
     public ResponseEntity<byte[]> getCover(@PathVariable String isrCode) {
         log.info("Get Track cover Image: isrCode={}", isrCode);
         byte[] imageBytes = getCoverImageUseCase.getCoverImage(isrCode);
-        return ResponseEntity.ok(imageBytes);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
     }
 
 }

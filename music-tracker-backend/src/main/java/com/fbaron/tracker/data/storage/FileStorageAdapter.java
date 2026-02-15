@@ -1,5 +1,7 @@
 package com.fbaron.tracker.data.storage;
 
+import com.fbaron.tracker.core.exception.FileReadException;
+import com.fbaron.tracker.core.exception.StorageException;
 import com.fbaron.tracker.core.repository.FileStorageRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,7 @@ public class FileStorageAdapter implements FileStorageRepository {
             log.info("Saved cover to disk: isrCode={}, path={}", isrCode, targetFile.toAbsolutePath());
             return targetFile.toAbsolutePath().toString();
         } catch (IOException e) {
-            throw new RuntimeException("Could not storage the image", e);
+            throw new StorageException("Could not storage the image");
         }
     }
 
@@ -54,7 +56,7 @@ public class FileStorageAdapter implements FileStorageRepository {
             return Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             log.error("Could not read cover from path: {} - {}", path, e.getMessage());
-            throw new RuntimeException("Error reading image file");
+            throw new FileReadException("Error reading image file");
         }
     }
 

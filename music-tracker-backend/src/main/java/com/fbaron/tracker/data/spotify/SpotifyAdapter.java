@@ -1,5 +1,8 @@
 package com.fbaron.tracker.data.spotify;
 
+import com.fbaron.tracker.core.exception.ImageNotFoundException;
+import com.fbaron.tracker.core.exception.ProviderAuthenticationException;
+import com.fbaron.tracker.core.exception.TrackNotFoundException;
 import com.fbaron.tracker.core.model.Track;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
 import com.fbaron.tracker.data.spotify.entity.SpotifyAlbumResponse;
@@ -55,7 +58,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
 
         if (response == null || !response.containsKey("access_token")) {
             log.error("Failed to obtain Spotify access token: response missing access_token");
-            throw new RuntimeException("Failed to obtain Spotify access token");
+            throw new ProviderAuthenticationException("Failed to obtain Spotify access token");
         }
 
         log.info("Spotify Access Token Fetched");
@@ -71,7 +74,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
         String token = getAccessToken();
 
         if (token == null || token.isBlank()) {
-            throw new RuntimeException("Spotify Access Token is missing");
+            throw new ProviderAuthenticationException("Spotify Access Token is missing");
         }
 
         SpotifySearchResponse response = spotifyRestClient.get()
@@ -86,7 +89,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
 
         if (response == null || response.tracks().items().isEmpty()) {
             log.warn("Track not found in Spotify: isrCode = {}", isrCode);
-            throw new RuntimeException("Track not found with IRSC: " + isrCode);
+            throw new TrackNotFoundException("Track not found with IRSC: " + isrCode);
         }
 
         var trackItem  = response.tracks().items().getFirst();
@@ -107,7 +110,7 @@ public class SpotifyAdapter implements MusicProviderRepository {
 
         if (albumResponse == null || albumResponse.images().isEmpty()) {
             log.warn("Album not found in Spotify: albumId = {}", albumId);
-            throw new RuntimeException("No images found for album: " + albumId);
+            throw new ImageNotFoundException("No images found for album: " + albumId);
         }
 
         String imageUrl = albumResponse.images().getFirst().url();

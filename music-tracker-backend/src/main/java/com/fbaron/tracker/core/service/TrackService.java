@@ -1,5 +1,6 @@
 package com.fbaron.tracker.core.service;
 
+import com.fbaron.tracker.core.exception.TrackNotFoundException;
 import com.fbaron.tracker.core.model.RegistrationResult;
 import com.fbaron.tracker.core.model.Track;
 import com.fbaron.tracker.core.repository.FileStorageRepository;
@@ -60,7 +61,7 @@ public class TrackService implements RegisterTrackUseCase, GetTrackUseCase, GetC
         return trackQueryRepository.findByIsrCode(isrCode)
                 .orElseThrow(() -> {
                     log.error("Track not found: isrCode={}", isrCode);
-                    return new RuntimeException("Track not found with ISRC: " + isrCode);
+                    return new TrackNotFoundException("Track not found with ISRC: " + isrCode);
                 });
     }
 
@@ -69,7 +70,7 @@ public class TrackService implements RegisterTrackUseCase, GetTrackUseCase, GetC
         Track track = trackQueryRepository.findByIsrCode(isrCode)
                 .orElseThrow(() -> {
                     log.error("Track not found for cover: isrCode={}", isrCode);
-                    return new RuntimeException("Track not found with ISRC: " + isrCode);
+                    return new TrackNotFoundException("Track not found with ISRC: " + isrCode);
                 });
 
         return fileStorageRepository.readFromDisk(track.getCoverPath());
