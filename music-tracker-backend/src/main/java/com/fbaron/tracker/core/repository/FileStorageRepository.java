@@ -4,4 +4,6 @@ public interface FileStorageRepository {
 
     String saveToDisk(String isrCode, byte[] content);
 
+    byte[] readFromDisk(String path);
+
 }

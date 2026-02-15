@@ -2,6 +2,7 @@ package com.fbaron.tracker.web.rest;
 
 import com.fbaron.tracker.core.model.RegistrationResult;
 import com.fbaron.tracker.core.model.Track;
+import com.fbaron.tracker.core.usecase.GetCoverImageUseCase;
 import com.fbaron.tracker.core.usecase.GetTrackUseCase;
 import com.fbaron.tracker.core.usecase.RegisterTrackUseCase;
 import com.fbaron.tracker.web.dto.RegisterTrackDto;
@@ -26,6 +27,7 @@ public class TrackRestAdapter implements TrackRestApi {
 
     private final RegisterTrackUseCase registerTrackUseCase;
     private final GetTrackUseCase getTrackUseCase;
+    private final GetCoverImageUseCase getCoverImageUseCase;
     private final TrackDtoMapper trackDtoMapper;
 
     @Override
@@ -48,6 +50,14 @@ public class TrackRestAdapter implements TrackRestApi {
         Track track = getTrackUseCase.getTrackByIsrCode(isrCode);
         TrackDto trackDto = trackDtoMapper.toDto(track);
         return ResponseEntity.ok(trackDto);
+    }
+
+    @Override
+    @GetMapping("/{isrCode}/cover")
+    public ResponseEntity<byte[]> getCover(@PathVariable String isrCode) {
+        log.info("Get Track cover Image: isrCode={}", isrCode);
+        byte[] imageBytes = getCoverImageUseCase.getCoverImage(isrCode);
+        return ResponseEntity.ok(imageBytes);
     }
 
 }

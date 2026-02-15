@@ -6,6 +6,7 @@ import com.fbaron.tracker.core.repository.FileStorageRepository;
 import com.fbaron.tracker.core.repository.MusicProviderRepository;
 import com.fbaron.tracker.core.repository.TrackCommandRepository;
 import com.fbaron.tracker.core.repository.TrackQueryRepository;
+import com.fbaron.tracker.core.usecase.GetCoverImageUseCase;
 import com.fbaron.tracker.core.usecase.GetTrackUseCase;
 import com.fbaron.tracker.core.usecase.RegisterTrackUseCase;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 
 @RequiredArgsConstructor
-public class TrackService implements RegisterTrackUseCase, GetTrackUseCase {
+public class TrackService implements RegisterTrackUseCase, GetTrackUseCase, GetCoverImageUseCase {
 
     private static final Logger log = LogManager.getLogger(TrackService.class);
 
@@ -62,4 +63,16 @@ public class TrackService implements RegisterTrackUseCase, GetTrackUseCase {
                     return new RuntimeException("Track not found with ISRC: " + isrCode);
                 });
     }
+
+    @Override
+    public byte[] getCoverImage(String isrCode) {
+        Track track = trackQueryRepository.findByIsrCode(isrCode)
+                .orElseThrow(() -> {
+                    log.error("Track not found for cover: isrCode={}", isrCode);
+                    return new RuntimeException("Track not found with ISRC: " + isrCode);
+                });
+
+        return fileStorageRepository.readFromDisk(track.getCoverPath());
+    }
+
 }

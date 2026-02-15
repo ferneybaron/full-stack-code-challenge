@@ -48,4 +48,14 @@ public class FileStorageAdapter implements FileStorageRepository {
         }
     }
 
+    @Override
+    public byte[] readFromDisk(String path) {
+        try {
+            return Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            log.error("Could not read cover from path: {} - {}", path, e.getMessage());
+            throw new RuntimeException("Error reading image file");
+        }
+    }
+
 }

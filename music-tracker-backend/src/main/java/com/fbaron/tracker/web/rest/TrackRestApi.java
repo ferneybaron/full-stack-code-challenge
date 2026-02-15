@@ -11,4 +11,6 @@ public interface TrackRestApi {
 
     ResponseEntity<TrackDto> getTrackMetadata(String isrCode);
 
+    ResponseEntity<byte[]> getCover(String isrCode);
+
 }
