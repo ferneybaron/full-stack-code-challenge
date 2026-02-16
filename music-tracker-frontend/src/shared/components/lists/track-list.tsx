@@ -38,12 +38,18 @@ function TrackListItem({ track }: { track: Track }) {
 
   useEffect(() => {
     if (!coverBlob) {
-      setCoverUrl("");
-      return;
+      queueMicrotask(() => setCoverUrl(""));
+      return () => {};
     }
     const url = URL.createObjectURL(coverBlob);
-    setCoverUrl(url);
-    return () => URL.revokeObjectURL(url);
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) setCoverUrl(url);
+    });
+    return () => {
+      cancelled = true;
+      URL.revokeObjectURL(url);
+    };
   }, [coverBlob]);
 
   function formatDuration(seconds: number): string {

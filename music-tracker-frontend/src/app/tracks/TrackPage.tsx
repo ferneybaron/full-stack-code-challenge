@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { Plus, Search } from "lucide-react";
 import {
   Tabs,
@@ -5,18 +6,31 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../shared/components/tabs/tabs";
+import { useAppDispatch } from "../config/hooks";
+import { setTrack } from "./reducer/trackSlice";
 import { TrackTab } from "./form/TrackTab";
 import {
   useRegisterTrackMutation,
   useLazyGetTrackByIsrCodeQuery,
+  useLazyGetTrackCoverQuery,
 } from "./service/trackService";
 
 const TrackPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [registerTrack] = useRegisterTrackMutation();
   const [getTrackByIsrCode] = useLazyGetTrackByIsrCodeQuery();
+  const [getCover] = useLazyGetTrackCoverQuery();
 
   const handleRegister = (isrCode: string) =>
-    registerTrack({ isrCode }).unwrap();
+    registerTrack({ isrCode })
+      .unwrap()
+      .then(async (track) => {
+        dispatch(setTrack(track));
+        await getCover(track.isrCode).unwrap().catch(() => {});
+        navigate(`/tracks/${encodeURIComponent(track.isrCode)}`);
+        return track;
+      });
 
   const handleLookup = (isrCode: string) => getTrackByIsrCode(isrCode).unwrap();
 

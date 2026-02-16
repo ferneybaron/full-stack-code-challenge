@@ -33,8 +33,8 @@ export function SearchForm({
       >
         {label}
       </label>
-      <div className="flex gap-2">
-        <div className="relative flex-1">
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             id="isrc-input"
@@ -50,7 +50,7 @@ export function SearchForm({
         <Button
           type="submit"
           disabled={isLoading || !isrcCode.trim()}
-          className="h-11 px-6 font-medium"
+          className="h-11 px-6 font-medium w-full sm:w-auto"
         >
           {isLoading ? (
             <>

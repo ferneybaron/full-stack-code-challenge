@@ -5,12 +5,7 @@ interface DashboardProps {
 }
 const Dashboard = (props: DashboardProps) => {
   const { children } = props;
-  return (
-    <>
-      <div>Dashboard</div>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default Dashboard;
