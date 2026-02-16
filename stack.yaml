@@ -1,0 +1,56 @@
+# Full-stack Music Tracker: one stack for backend + frontend
+# Deployed from repo root by Jenkins (pipelineFullStack)
+version: "3.9"
+services:
+  backend:
+    image: registry.fbaron.com/music-tracker-backend
+    networks:
+      - backend-nw
+    secrets:
+      - postgres_password
+    environment:
+      - SERVER_PORT=${SERVER_PORT:-8080}
+      - ENVIRONMENT=${ENVIRONMENT:-local}
+      - DATABASE_HOST=${DATABASE_HOST:-127.0.0.1}
+      - DATABASE_PORT=${DATABASE_PORT:-5432}
+      - DATABASE_NAME=${DATABASE_NAME:-trackerdb}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-postgres}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - API_USERNAME=${API_USERNAME:-admin}
+      - API_PASSWORD=${API_PASSWORD:-admin}
+      - STORAGE_LOCATION=${STORAGE_LOCATION:-./local-storage/covers}
+    ports:
+      - "8086:8080"
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  frontend:
+    image: registry.fbaron.com/music-tracker-frontend
+    networks:
+      - frontend-nw
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-local}
+      - VITE_BACKEND_API=${VITE_BACKEND_API}
+    ports:
+      - "86:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+secrets:
+  postgres_password:
+    external: true
+
+networks:
+  backend-nw:
+    external: true
+  frontend-nw:
+    external: true

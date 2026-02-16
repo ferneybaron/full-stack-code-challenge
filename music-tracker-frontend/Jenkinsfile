@@ -1,0 +1,3 @@
+// This project is deployed as part of the full-stack pipeline.
+// Use the repository root Jenkinsfile (full-stack-code-challenge) for one deployment of backend + frontend.
+// Configure Jenkins to run the pipeline from the repo root, not from this subfolder.
