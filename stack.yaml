@@ -21,7 +21,7 @@ services:
       - API_PASSWORD=${API_PASSWORD:-admin}
       - STORAGE_LOCATION=${STORAGE_LOCATION:-./local-storage/covers}
     ports:
-      - "8086:8080"
+      - "8088:8080"
     deploy:
       mode: replicated
       replicas: 1
@@ -37,7 +37,7 @@ services:
       - ENVIRONMENT=${ENVIRONMENT:-local}
       - VITE_BACKEND_API=${VITE_BACKEND_API}
     ports:
-      - "86:80"
+      - "8089:80"
     deploy:
       mode: replicated
       replicas: 1
