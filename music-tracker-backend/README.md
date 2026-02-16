@@ -85,23 +85,24 @@ The API is available at **http://localhost:8080/tracker** (context path `/tracke
 
 ## Configuration
 
-Configuration is driven by `application.yaml` and environment variables.
+Configuration is driven by `application.yaml` and environment variables. The app also loads **optional** config from Docker secrets via `configtree:/run/secrets/` (e.g. secret `postgres_password` is used as the DB password when set; otherwise `DATABASE_PASSWORD` or default `postgres` applies).
 
-| Variable              | Description                    | Default                    |
-| --------------------- | ------------------------------ | -------------------------- |
-| `SERVER_PORT`         | Server port                    | `8080`                     |
-| `DATABASE_HOST`       | PostgreSQL host                | `127.0.0.1`                |
-| `DATABASE_PORT`       | PostgreSQL port                | `5432`                     |
-| `DATABASE_NAME`       | Database name                  | `trackerdb`                |
-| `DATABASE_USERNAME`   | DB user                        | `postgres`                 |
-| `DATABASE_PASSWORD`   | DB password                    | `postgres`                 |
-| `SPOTIFY_CLIENT_ID`   | Spotify app client ID          | *(required)*               |
-| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret   | *(required)*               |
-| `API_USERNAME`       | HTTP Basic username for API    | `admin`              |
-| `API_PASSWORD`       | HTTP Basic password for API    | `admin`           |
-| `STORAGE_LOCATION`   | Directory for cover images     | `./local-storage/covers`   |
-| `DOCS_ENABLED`       | Enable Swagger UI & api-docs   | `true`                     |
-| `ENVIRONMENT`        | Active Spring profile          | `local`                    |
+| Variable                | Description                              | Default |
+| ----------------------- | ---------------------------------------- | ------- |
+| `SERVER_PORT`            | Server port                              | `8080`  |
+| `DATABASE_HOST`         | PostgreSQL host                          | `127.0.0.1` |
+| `DATABASE_PORT`         | PostgreSQL port                          | `5432`  |
+| `DATABASE_NAME`         | Database name                            | `trackerdb` |
+| `DATABASE_USERNAME`     | DB user                                  | `postgres` |
+| `DATABASE_PASSWORD`     | DB password (or use secret `postgres_password`) | `postgres` |
+| `SPOTIFY_CLIENT_ID`     | Spotify app client ID                    | *(required)* |
+| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret                | *(required)* |
+| `API_USERNAME`          | HTTP Basic username for API              | `admin` |
+| `API_PASSWORD`          | HTTP Basic password for API              | `admin` |
+| `STORAGE_LOCATION`      | Directory for cover images (in Docker: relative to `/app`) | `./local-storage/covers` |
+| `DOCS_ENABLED`          | Enable Swagger UI & api-docs             | `true`  |
+| `CORS_ALLOWED_ORIGINS`  | Comma-separated allowed origins for CORS  | `http://localhost:5173,http://127.0.0.1:5173,http://trackerweb.fbaron.com,https://trackerweb.fbaron.com` |
+| `ENVIRONMENT`           | Active Spring profile                    | `local` |
 
 ---
 
