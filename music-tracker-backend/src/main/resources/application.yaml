@@ -4,6 +4,8 @@ server:
     contextPath: "/tracker"
 
 spring:
+  config:
+    import: optional:configtree:/run/secrets/
   application:
     name: music-tracker-backend
 
