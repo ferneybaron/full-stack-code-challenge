@@ -59,3 +59,7 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+
+openapi:
+  local-url: http://localhost:${SERVER_PORT:8080}/tms
+  dev-url: https://trackerapi.fbaron.com/tracker

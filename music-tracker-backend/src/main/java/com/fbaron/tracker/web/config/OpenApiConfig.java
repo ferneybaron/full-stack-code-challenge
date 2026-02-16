@@ -23,6 +23,9 @@ public class OpenApiConfig {
     @Value("${openapi.local-url:http://localhost:8080}")
     private String localUrl;
 
+    @Value("${openapi.dev-url:http://localhost:8080}")
+    private String devUrl;
+
     // dev, prod URLs
 
     /**
@@ -47,8 +50,11 @@ public class OpenApiConfig {
                                 .name("MIT")))
                 .servers(List.of(
                         new Server()
-                                .url(localUrl + "/tracker")
-                                .description("Local development server")
+                                .url(localUrl)
+                                .description("Local development server"),
+                        new Server()
+                                .url(devUrl)
+                                .description("Development Server")
                 ))
                 .components(new Components()
                         .addSecuritySchemes("basicAuth",
