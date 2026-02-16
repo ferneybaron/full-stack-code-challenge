@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
+import { trackService } from "../tracks/service/trackService";
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(trackService.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
