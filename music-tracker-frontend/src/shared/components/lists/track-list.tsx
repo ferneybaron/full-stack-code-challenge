@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Clock, Disc3, AlertTriangle, ChevronRight } from "lucide-react";
 import type { Track } from "../../../app/tracks/model/Track";
@@ -32,13 +34,15 @@ function TrackListItem({ track }: { track: Track }) {
   const { data: coverBlob } = useGetTrackCoverQuery(track.isrCode, {
     skip: !track.isrCode,
   });
-  const [coverUrl] = useState<string>("");
+  const [coverUrl, setCoverUrl] = useState<string>("");
 
   useEffect(() => {
     if (!coverBlob) {
+      setCoverUrl("");
       return;
     }
     const url = URL.createObjectURL(coverBlob);
+    setCoverUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [coverBlob]);
 
@@ -54,7 +58,7 @@ function TrackListItem({ track }: { track: Track }) {
         <div className="flex items-center gap-4 p-3 sm:p-4">
           {/* Cover thumbnail */}
           <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-md overflow-hidden flex-shrink-0 bg-secondary">
-            {!imgError ? (
+            {!imgError && coverUrl ? (
               <img
                 src={coverUrl}
                 alt={`Album cover for ${track.albumName}`}

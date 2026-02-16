@@ -5,27 +5,20 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../shared/components/tabs/tabs";
+import { TrackTab } from "./form/TrackTab";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../../shared/components/cards/card";
-import { SearchForm } from "../../shared/components/search/search-form";
-import { useState } from "react";
-import { TrackSkeleton } from "../../shared/components/skeletons/track-skeleton";
-import { TrackList } from "../../shared/components/lists/track-list";
+  useRegisterTrackMutation,
+  useLazyGetTrackByIsrCodeQuery,
+} from "./service/trackService";
 
 const TrackPage = () => {
-  const [isLoading] = useState(false);
-  async function handleRegisterTrack(isrCode: string) {
-    console.log("handleRegisterTrack isrCode", isrCode);
-  }
+  const [registerTrack] = useRegisterTrackMutation();
+  const [getTrackByIsrCode] = useLazyGetTrackByIsrCodeQuery();
 
-  async function handleSearchTrack(isrCode: string) {
-    console.log("handleSearchTrack isrCode", isrCode);
-  }
+  const handleRegister = (isrCode: string) =>
+    registerTrack({ isrCode }).unwrap();
+
+  const handleLookup = (isrCode: string) => getTrackByIsrCode(isrCode).unwrap();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -60,51 +53,20 @@ const TrackPage = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Register Tab */}
-          <TabsContent value="register" className="mt-6 flex flex-col gap-6">
-            <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Register a New Track</CardTitle>
-                <CardDescription>
-                  Fetch track metadata from the music provider and store it
-                  locally for future lookups.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SearchForm
-                  onSubmit={handleRegisterTrack}
-                  isLoading={isLoading}
-                  label="ISRC Code"
-                  placeholder="e.g. USRC17607839"
-                />
-              </CardContent>
-            </Card>
-
-            {isLoading && <TrackSkeleton />}
+          <TabsContent value="register" className="mt-6">
+            <TrackTab
+              title="Register a New Track"
+              description="Fetch track metadata from the music provider and store it locally for future lookups."
+              onSearch={handleRegister}
+            />
           </TabsContent>
 
-          {/* Lookup Tab */}
-          <TabsContent value="lookup" className="mt-6 flex flex-col gap-6">
-            <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Lookup Stored Track</CardTitle>
-                <CardDescription>
-                  Retrieve metadata for a track that has already been
-                  registered. Results appear in the list below -- click any
-                  track to view full details.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SearchForm
-                  onSubmit={handleSearchTrack}
-                  isLoading={isLoading}
-                  label="ISRC Code"
-                  placeholder="e.g. USRC17607839"
-                />
-              </CardContent>
-            </Card>
-
-            <TrackList tracks={[]} />
+          <TabsContent value="lookup" className="mt-6">
+            <TrackTab
+              title="Lookup Stored Track"
+              description="Retrieve metadata for a track that has already been registered."
+              onSearch={handleLookup}
+            />
           </TabsContent>
         </Tabs>
       </main>
