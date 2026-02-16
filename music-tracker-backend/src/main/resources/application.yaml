@@ -63,3 +63,8 @@ management:
 openapi:
   local-url: http://localhost:${SERVER_PORT:8080}/tms
   dev-url: https://trackerapi.fbaron.com/tracker
+
+# CORS: allowed origins (comma-separated). Lock to your frontend only.
+# Default: localhost (dev) + trackerweb.fbaron.com. Override in prod via CORS_ALLOWED_ORIGINS.
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,http://trackerweb.fbaron.com,https://trackerweb.fbaron.com}
