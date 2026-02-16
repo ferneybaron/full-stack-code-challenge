@@ -20,6 +20,15 @@ spring:
     password: ${postgres-password:postgres}
     type: com.zaxxer.hikari.HikariDataSource
 
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:5432}/trackerdb?ssl=false
+    user: ${DATABASE_USERNAME:postgres}
+    password: ${postgres-password:postgres}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
 spotify:
   api-base-url: https://api.spotify.com
   auth-url: https://accounts.spotify.com/api/token
