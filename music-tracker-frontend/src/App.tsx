@@ -1,9 +1,17 @@
+import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
+import LoginPage from "./app/login/LoginPage";
+import TrackPage from "./app/tracks/TrackPage";
 
 function App() {
   return (
     <>
-      <h1 className="text-9xl font-bold underline">Hello world!</h1>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/tracks" element={<TrackPage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
