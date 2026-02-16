@@ -2,6 +2,17 @@ import { useNavigate } from "react-router";
 import { useAppDispatch } from "../config/hooks";
 import { useState, type ComponentProps } from "react";
 import { loginAction } from "../config/authSlice";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../shared/components/cards/card";
+import { Label } from "../../shared/components/labels/label";
+import { Input } from "../../shared/components/inputs/input";
+import { Eye, EyeOff, Loader2, LogIn, Music2 } from "lucide-react";
+import { Button } from "../../shared/components/buttons/button";
 
 const BASE_URL = (import.meta.env.VITE_BACKEND_API ?? "") + "/api/v1";
 
@@ -63,86 +74,100 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm max-w-md w-full">
-      <div className="flex flex-col space-y-1.5 p-6 text-center items-center">
-        <h3 className="text-2xl font-semibold leading-none tracking-tight">
-          Music Tracker
-        </h3>
-
-        <p className="text-sm text-muted-foreground">
-          Sign in with your backend credentials to continue.
-        </p>
-      </div>
-
-      <div className="p-6 pt-0">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          {/* Error message */}
-          {error && (
-            <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
-
-          {/* Username */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="username" className="text-sm font-medium">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-              autoFocus
-              disabled={isLoading}
-              // Replaced <Input /> with standard HTML + base Tailwind classes
-              className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-md border-border/50 bg-card/80 backdrop-blur-sm">
+        <CardHeader className="text-center flex flex-col items-center gap-4 pb-2">
+          <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary">
+            <Music2 className="w-7 h-7" />
           </div>
+          <div className="flex flex-col gap-1">
+            <CardTitle className="text-2xl font-bold tracking-tight">
+              Music Tracker
+            </CardTitle>
+            <CardDescription>
+              Sign in with your backend credentials to continue.
+            </CardDescription>
+          </div>
+        </CardHeader>
 
-          {/* Password */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
+        <CardContent className="pt-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {/* Error message */}
+            {error && (
+              <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+                {error}
+              </div>
+            )}
+
+            {/* Username */}
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="username" className="text-sm font-medium">
+                Username
+              </Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                autoFocus
                 disabled={isLoading}
-                // Base Tailwind classes + 'pr-10' to leave room for the eye icon
-                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              ></button>
             </div>
-          </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            // Replaced <Button /> with standard HTML + base Tailwind classes
-            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-colors"
-          >
-            {isLoading ? <>Signing in...</> : <>Sign In</>}
-          </button>
+            {/* Password */}
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="password" className="text-sm font-medium">
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  disabled={isLoading}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
 
-          <p className="text-xs text-center text-muted-foreground">
-            Uses HTTP Basic Authentication to connect to the backend API.
-          </p>
-        </form>
-      </div>
+            {/* Submit */}
+            <Button type="submit" disabled={isLoading} className="w-full gap-2">
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </>
+              )}
+            </Button>
+
+            <p className="text-xs text-center text-muted-foreground">
+              Uses HTTP Basic Authentication to connect to the backend API.
+            </p>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
