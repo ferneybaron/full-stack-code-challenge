@@ -1,0 +1,24 @@
+# Test profile: use H2 so context loads without PostgreSQL
+spring:
+  security:
+    user:
+      name: testuser
+      password: testpass
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+# Spotify and storage: use placeholders so tests that don't call them still pass
+spotify:
+  api-base-url: https://api.spotify.com
+  auth-url: https://accounts.spotify.com/api/token
+  client-id: test-client-id
+  client-secret: test-client-secret
+
+app:
+  storage:
+    location: ${java.io.tmpdir}/music-track-test-covers
